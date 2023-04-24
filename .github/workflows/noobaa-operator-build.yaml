@@ -1,0 +1,42 @@
+name: Manual noobaa-operator Build Dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to Build From"
+        required: true
+      tag:
+        description: "Additional tag for the build (such as alpha, beta, etc.) - Optional"
+        default: ""
+
+jobs:
+  manual-build-and-publish-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          repository: 'jackyalbo/noobaa-operator'
+          ref: ${{ github.event.inputs.branch }}
+          path: 'noobaa-operator'
+
+      - name: Get Current Date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y%m%d')"
+
+      - name: Prepare Suffix
+        id: suffix
+        if: ${{ github.event.inputs.tag != '' }}
+        run: echo ::set-output name=suffix::"-${{ github.event.inputs.tag }}"
+    
+      - name: Login to DockerHub Registry
+        run: echo ${{ secrets.GHACTIONSDOCKERHUB }} | docker login quay.io -u ${{ secrets.GHACTIONSDOCKERHUBNAME }} --password-stdin
+
+      - name: Build & Push Docker Images to DockerHub
+        env:
+          DOCKERHUB_OWNER: ${{ secrets.GHACTIONSDOCKERHUBNAME }}
+        run: |
+          cd noobaa-operator
+          make image IMAGE=quay.io/jalbo/noobaa-operator:${{ github.event.inputs.branch }}-${{ steps.date.outputs.date }} || true
+          ls -l build/_output/bin
+          docker push quay.io/jalbo/noobaa-operator:${{ github.event.inputs.branch }}-${{ steps.date.outputs.date }}
