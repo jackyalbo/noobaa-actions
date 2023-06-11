@@ -36,7 +36,7 @@ jobs:
         env:
           DOCKERHUB_OWNER: ${{ secrets.GHACTIONSDOCKERHUBNAME }}
         run: |
-          cd noobaa-operator
-          make image IMAGE=quay.io/jalbo/noobaa-operator:${{ github.event.inputs.branch }}-${{ steps.date.outputs.date }} || true
+          cd noobaa-core
+          make image IMAGE=quay.io/jalbo/noobaa-core:${{ github.event.inputs.branch }}-${{ steps.date.outputs.date }} || true
           ls -l build/_output/bin
-          docker push quay.io/jalbo/noobaa-operator:${{ github.event.inputs.branch }}-${{ steps.date.outputs.date }}
+          docker push quay.io/jalbo/noobaa-core:${{ github.event.inputs.branch }}-${{ steps.date.outputs.date }}
