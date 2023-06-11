@@ -37,6 +37,5 @@ jobs:
           DOCKERHUB_OWNER: ${{ secrets.GHACTIONSDOCKERHUBNAME }}
         run: |
           cd noobaa-core
-          make image IMAGE=quay.io/jalbo/noobaa-core:${{ github.event.inputs.branch }}-${{ steps.date.outputs.date }} || true
-          ls -l build/_output/bin
+          make noobaa NOOBAA_TAG=quay.io/jalbo/noobaa-core:${{ github.event.inputs.branch }}-${{ steps.date.outputs.date }}
           docker push quay.io/jalbo/noobaa-core:${{ github.event.inputs.branch }}-${{ steps.date.outputs.date }}
