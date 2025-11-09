@@ -55,7 +55,7 @@ jobs:
           RPM_BASE_VERSION=noobaa-core-${VERSION}-${DATE}
           RPM_FULL_PATH="${RPM_BASE_VERSION}-${{ github.event.inputs.branch }}${{ steps.suffix.outputs.suffix }}.el${{ github.event.inputs.centos_ver }}.x86_64.rpm"
           echo "RPM FULL PATH=${RPM_FULL_PATH}"
-          cp ./build/rpm/${RPM_BASE_VERSION}.el.x86_64.rpm ${RPM_FULL_PATH}
+          cp ./build/rpm/${RPM_BASE_VERSION}.el${{ github.event.inputs.centos_ver }}.x86_64.rpm ${RPM_FULL_PATH}
           echo "rpm_full_path=${RPM_FULL_PATH}" >> $GITHUB_OUTPUT
 
       - name: Upload artifact
